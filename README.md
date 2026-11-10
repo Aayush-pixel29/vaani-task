@@ -68,3 +68,4 @@ pip install httpx pymupdf rank-bm25 fastapi uvicorn pydantic python-dotenv panda
 # 3. Verify results.csv and compile writeup.pdf
 python generate_compliant_pdf.py
 ```
+

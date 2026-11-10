@@ -68,8 +68,9 @@ def main():
             dur = max(1.0, sub["start_time"].max() - sub["start_time"].min() + (sub["total_ms"].max() / 1000.0))
             offered_rate = (reqs / dur) * 60.0
 
-            ft = sub[sub["first_token_ms"] > 0]["first_token_ms"]
-            tot = sub[sub["total_ms"] > 0]["total_ms"]
+            ok_sub = sub[sub["status"] == "ok"]
+            ft = ok_sub[ok_sub["first_token_ms"] > 0]["first_token_ms"]
+            tot = ok_sub[ok_sub["total_ms"] > 0]["total_ms"] if not ok_sub.empty else sub[sub["total_ms"] > 0]["total_ms"]
 
             ft_p50 = np.percentile(ft, 50) if len(ft) > 0 else 0
             ft_p95 = np.percentile(ft, 95) if len(ft) > 0 else 0

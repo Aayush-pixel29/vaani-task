@@ -85,7 +85,7 @@ def build_tables_from_csv(csv_path: str):
 
         ok_sub = sub[sub["status"] == "ok"]
         ttft_s = pct_str(ok_sub["first_token_ms"], (50, 95, 99))
-        tot_s = pct_str(sub["total_ms"], (50, 95, 99))
+        tot_s = pct_str(ok_sub["total_ms"] if not ok_sub.empty else sub["total_ms"], (50, 95, 99))
 
         t2a_rows.append([
             sc, source, str(n_req), f"{dur_s:.1f}", f"{offered_rate:.1f}", ttft_s, tot_s
@@ -230,7 +230,7 @@ def generate_pdf():
         "returned HTTP 404 (retired); active free-tier traffic runs on <font name='Courier'>openai/gpt-oss-20b</font>. Headers exposed "
         "<font name='Courier'>x-ratelimit-limit-tokens: 8000</font> (TPM, refilling via a continuous leaky bucket at 133.3 tokens/s) and "
         "<font name='Courier'>x-ratelimit-limit-requests: 1000</font>. By tracking <font name='Courier'>x-ratelimit-reset-requests</font> across sequential probes "
-        "(7m12s = 432s after 5 requests, or 86.4s/request), I proved the 1,000 limit is <b>Requests Per Day (RPD)</b> (1,000 * 86.4s = 86,400s = 24h), while RPM "
+        "(7m12s = 432s after 5 requests, or 86.4s/request), I proved the 1,000 limit is <b>Requests Per Day (RPD)</b> (1,000 x 86.4s = 86,400s = 24h), while RPM "
         "and TPD are masked by the 8,000 TPM bottleneck. <b>Stand-In Calibration &amp; Differences:</b> <font name='Courier'>standin_server.py</font> is a FastAPI "
         "SSE server calibrated to Groq's empirical TTFT distribution, enforcing the 8,000 TPM (133.3 tok/s) and 1,000 RPD leaky buckets, emitting exact Groq 429 "
         "JSON payloads + <font name='Courier'>retry-after</font> headers, adding linear contention (+180 ms TTFT and +4 ms/token per concurrent request), 1.5% HTTP 500 "
@@ -259,8 +259,11 @@ def generate_pdf():
         "(<font name='Courier'>retrieval_eval</font>, 18 custom questions x 3 settings) ran on the <b>real Groq service</b> (<font name='Courier'>source=real</font>). "
         "The 5 load scenarios in Tables 2a/2b (112 requests total) ran against the calibrated <b>stand-in</b> (<font name='Courier'>source=stand-in</font>). "
         "One <font name='Courier'>results.csv</font> row equals one end-to-end question; <font name='Courier'>Peak queue length</font> is derived from interval overlap "
-        "of <font name='Courier'>start_time</font> and <font name='Courier'>total_ms</font>, and <font name='Courier'>Cost per 1,000 answers</font> assumes a reference "
-        "$0.10/1M token rate. <b>Two Numbers We Could Not Have Guessed Without Running It:</b> (1) <font name='Courier'>openai/gpt-oss-20b</font> streams 4–25 hidden "
+        "of <font name='Courier'>start_time</font> and <font name='Courier'>total_ms</font>. For Table 2a, latency percentiles are computed over completed answers "
+        "(<font name='Courier'>status=ok</font>) where a first token was emitted, except <font name='Courier'>daily_budget_exhausted</font> where 100% fast-fail at "
+        "5.3 / 10.5 / 15.5 ms. In Table 2b, <font name='Courier'>Tokens per answer</font> and <font name='Courier'>Cost per 1,000 answers</font> ($0.10/1M tokens) "
+        "are computed across all offered requests in each scenario (accounting for tokens consumed prior to 429 termination). "
+        "<b>Two Numbers We Could Not Have Guessed Without Running It:</b> (1) <font name='Courier'>openai/gpt-oss-20b</font> streams 4–25 hidden "
         "reasoning tokens <i>before</i> the first visible answer token, inflating true user TTFT ~2.3x over raw first-chunk arrival while quietly burning the 8,000 TPM "
         "budget; (2) when Step 4 triggers a single Critic repair loop on <font name='Courier'>512w_top5_norerank</font> (e.g., <font name='Courier'>eval_512w_q05</font>), "
         "resending the multi-turn history balloons prompt consumption to <b>7,169 input tokens</b> (89.6% of the entire 8,000 TPM limit in one question!).", body_st
@@ -273,14 +276,14 @@ def generate_pdf():
     # 4 Where the time goes
     story.append(Paragraph("4 Where the time goes", h_st))
     story.append(Paragraph(
-        "<b>Single Slow Request Anatomy (<font name='Courier'>eval_512w_q05</font> on real Groq, <font name='Courier'>total_ms = 3,548.3 ms</font>, "
-        "<font name='Courier'>first_token_ms = 3,203.2 ms</font>, <font name='Courier'>retries = 1</font>):</b> Splitting total latency across pipeline stages shows: "
+        "<b>Single Slow Request Anatomy (<font name='Courier'>eval_512w_q05</font> on real Groq, <font name='Courier'>total_ms</font> = 3,548.3 ms, "
+        "<font name='Courier'>first_token_ms</font> = 3,203.2 ms, <font name='Courier'>retries</font> = 1):</b> Splitting total latency across pipeline stages shows: "
         "<b>Waiting (Queue/Backoff) = 0.0 ms</b> (bucket had sufficient tokens at start); <b>Initial Working = 1,115.2 ms</b> (Step 1 Router + Step 2 BM25 tool took "
         "15.2 ms; Step 3 initial Drafter call took 1,100.0 ms); <b>Retrying / Critic Repair Loop = 2,088.0 ms</b> (Step 4a regex gate detected a missing bracketed "
         "page citation in the initial draft and triggered the repair loop, consuming an extra 3,560 prompt tokens and 2,088.0 ms of Groq inference); "
         "<b>Final Post-Verification Stream = 345.1 ms</b>. <b>Before vs. After First Token Proof:</b> 90.3% of total time (3,203.2 ms of 3,548.3 ms) occurred "
         "<i>before</i> the first user-visible token. We know this because step trace timestamps record <font name='Courier'>first_token_ms</font> only when Step 4 "
-        "Critic approves the repaired buffer for release (<font name='Courier'>t_critic_ok - t_start = 3,203.2 ms</font>), proving the delay came from pre-release "
+        "Critic approves the repaired buffer for release (<font name='Courier'>t_critic_ok</font> - <font name='Courier'>t_start</font> = 3,203.2 ms), proving the delay came from pre-release "
         "verification and repair rather than slow token streaming.", body_st
     ))
 
@@ -292,11 +295,11 @@ def generate_pdf():
         "<font name='Courier'>512w_top5_norerank</font> (~4,800 tokens/ans) to <font name='Courier'>256w_top3_norerank</font> (~2,323 tokens/ans) and uses the "
         "0-token deterministic citation gate instead of the LLM Critic. This keeps requests succeeding under tight token budgets (<font name='Courier'>steady</font> "
         "and <font name='Courier'>per_minute_limit_halved</font>), at the cost of lower factual recall (61.5% vs. 76.9%). (2) <i>Who is delayed vs. dropped:</i> "
-        "If a call still hits HTTP 429, in-flight requests enter full-jitter backoff (up to 2 retries, delaying tail completions to 14.8–31.4s in "
+        "If a call still hits HTTP 429, in-flight requests enter full-jitter backoff (up to 2 retries, delaying tail completions to 39.2–44.3s in "
         "<font name='Courier'>burst</font> and <font name='Courier'>sustained_overload</font>). Requests exceeding <font name='Courier'>max_retries=2</font> are "
-        "dropped cleanly as <font name='Courier'>rate_limited</font> (16.0% in burst, 27.5% in overload) so they do not starve new arrivals. "
+        "dropped cleanly as <font name='Courier'>rate_limited</font> (80.0% in burst, 70.0% in sustained_overload with 5.0% timed out) so they do not starve new arrivals. "
         "<b>At the Per-Day Limit (1,000 RPD):</b> Retrying a 24-hour window is futile; when <font name='Courier'>remaining-requests == 0</font> (or reset &gt; 60s), "
-        "the circuit breaker trips immediately (~12 ms fast-fail, 0 retries) and falls back to local extractive BM25 snippets.", body_st
+        "the circuit breaker trips immediately (5.3 ms p50 fast-fail, 10.5 ms p95, 0 retries) and falls back to local extractive BM25 snippets.", body_st
     ))
 
     # Retrieval: quality versus cost (Added after heading 5)
@@ -304,7 +307,7 @@ def generate_pdf():
     story.append(Paragraph(
         "Across 18 custom evaluation questions (13 answerable, 5 unanswerable traps) run on real Groq, <font name='Courier'>512w_top5_norerank</font> was selected as "
         "our primary default: it achieved the highest overall accuracy (<b>55.6% correct+cited [10/13 answerable = 76.9%]</b> and <b>27.8% correctly refused [5/5 = 100%]</b>, "
-        "with only 16.7% wrong) at 4,945 total tokens/answer. <font name='Courier'>256w_top3_norerank</font> cut token cost by 48.3% (2,557 tokens/ans) and reduced "
+        "with only 16.7% wrong) at 4,990 total tokens/answer. <font name='Courier'>256w_top3_norerank</font> cut token cost by 49.4% (2,525 tokens/ans) and reduced "
         "p95 TTFT from 10,489.8 ms to 1,820.5 ms, but dropped answer recall to 8/13 (44.4% of 18) because small windows split hyperparameter tables. "
         "Surprisingly, <font name='Courier'>512w_top5_rerank3</font> performed worst on latency (p95 TTFT 22,942.1 ms due to extra repair loops) and reduced recall "
         "from 10/13 to 8/13 while slipping to 4/5 on refusals. When the TPM limit is close (&lt; 3,800 remaining tokens), the pipeline dynamically switches from "
@@ -346,7 +349,7 @@ def generate_pdf():
     story.append(Paragraph("7 What the person sees", h_st))
     story.append(Paragraph(
         "At 3:00 PM when the daily budget is exhausted (<font name='Courier'>daily_budget_exhausted</font>), the user does <b>not</b> wait behind a doomed retry timer. "
-        "Within ~12.4 ms (p50), the assistant returns an explicit, honest fallback message containing deterministic local BM25 citations so the engineer is still "
+        "Within 5.3 ms (p50; 10.5 ms p95), the assistant returns an explicit, honest fallback message containing deterministic local BM25 citations so the engineer is still "
         "unblocked: <i>\"[DAILY_AI_BUDGET_EXHAUSTED] Our daily language-model verification quota has been reached for today (resets at 00:00 UTC). Rather than guessing "
         "without verification, AI synthesis is paused. Here are the top exact passages retrieved locally from the arXiv library for your query: "
         "1) [moshi_2410.00037v1, p.2, Section 1 Introduction]: '...theoretical latency of 160ms and practical latency of 200ms...'\"</i>", body_st
