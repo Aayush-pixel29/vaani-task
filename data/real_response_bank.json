@@ -1,0 +1,146 @@
+{
+  "Q01": {
+    "question": "In 'Attention Is All You Need', what are the exact number of encoder layers N, model dimension d_model, and attention heads h in the base Transformer model?",
+    "answer": "In the base Transformer model described in \u201cAttention Is All You Need,\u201d the encoder stack consists of **N\u202f=\u202f6** identical layers, each operating with a model dimension of **d_model\u202f=\u202f512**, and the multi\u2011head attention mechanism uses **h\u202f=\u202f8** parallel heads. [attention_1706.03762v7, p.3]",
+    "grade": "correct",
+    "target_paper": "attention_1706.03762v7",
+    "tokens_in": 4480,
+    "tokens_out": 157
+  },
+  "Q02": {
+    "question": "What BLEU score did the big Transformer model achieve on the WMT 2014 English-to-German translation task in 'Attention Is All You Need'?",
+    "answer": "The big Transformer model achieved a BLEU score of **28.4** on the WMT\u202f2014 English\u2011to\u2011German translation task [attention_1706.03762v7, p.8].",
+    "grade": "correct",
+    "target_paper": "attention_1706.03762v7",
+    "tokens_in": 3562,
+    "tokens_out": 121
+  },
+  "Q03": {
+    "question": "Why do the authors of 'Attention Is All You Need' scale the dot products by 1/sqrt(d_k) in Scaled Dot-Product Attention?",
+    "answer": "The authors scale the dot products by \\(1/\\sqrt{d_k}\\) to prevent the dot products from becoming too large as the dimensionality \\(d_k\\) grows. Large dot products push the softmax function into regions where its gradients become extremely small, which can hinder learning. By scaling with \\(1/\\sqrt{d_k}\\) the magnitude of the dot products is controlled, keeping the softmax in a more stable region and improving training stability and performance [attention_1706.03762v7, p.4].",
+    "grade": "correct",
+    "target_paper": "attention_1706.03762v7",
+    "tokens_in": 3153,
+    "tokens_out": 163
+  },
+  "Q04": {
+    "question": "In 'Attention Is All You Need', what optimizer parameter values (beta_1, beta_2, epsilon) and warmup_steps were used during training?",
+    "answer": "NOT_IN_PAPERS: The provided passages do not specify the value of `warmup_steps` used during training.",
+    "grade": "refused_wrongly",
+    "target_paper": "attention_1706.03762v7",
+    "tokens_in": 1430,
+    "tokens_out": 67
+  },
+  "Q05": {
+    "question": "In the Moshi paper, what is the parameter size of the Helium text language model backbone and how many tokens was it trained on?",
+    "answer": "NOT_IN_PAPERS: The provided passages do not contain the parameter size of the Helium text language model backbone or the exact number of tokens it was trained on.",
+    "grade": "refused_wrongly",
+    "target_paper": "moshi_2410.00037v1",
+    "tokens_in": 1228,
+    "tokens_out": 52
+  },
+  "Q06": {
+    "question": "What is the frame rate (in Hz) and frame size (in ms) of the Mimi neural audio codec used in Moshi?",
+    "answer": "The Mimi neural audio codec operates at a frame rate of **12.5\u202fHz** and produces a frame size of **80\u202fms** (the initial frame size and overall stride correspond to 80\u202fms) [moshi_2410.00037v1, p.10].",
+    "grade": "correct",
+    "target_paper": "moshi_2410.00037v1",
+    "tokens_in": 3820,
+    "tokens_out": 130
+  },
+  "Q07": {
+    "question": "What is 'Inner Monologue' in Moshi and how does predicting time-aligned text tokens before audio tokens help?",
+    "answer": "Inner Monologue is a training and inference framework introduced in Moshi that decomposes each spoken utterance into a structured sequence of **text, semantic, and acoustic tokens** and predicts this sequence in a hierarchical, per\u2011frame manner. By first predicting time\u2011aligned text tokens and then using those tokens as a prefix for the subsequent acoustic token generation, Inner Monologue forces a delay between the two token types. This delay allows the model to \u201clook ahead\u201d at the text that will be spoken before it generates the corresponding audio frames, thereby improving the **factuality and linguistic quality** of the generated speech and enabling the derivation of streaming TTS and ASR systems from the same model [moshi_2410.00037v1, p.3] [moshi_2410.00037v1, p.5]",
+    "grade": "correct",
+    "target_paper": "moshi_2410.00037v1",
+    "tokens_in": 3623,
+    "tokens_out": 225
+  },
+  "Q08": {
+    "question": "How does the RQ-Transformer in Moshi split sequence modeling into a Temporal Transformer and a Depth Transformer?",
+    "answer": "The RQ\u2011Transformer in Moshi splits sequence modeling into a **Temporal Transformer** and a **Depth Transformer** as follows:  \n* The flattened sequence of length \\(K\\!\\times\\!S\\) is first grouped into \\(S\\) time\u2011step contexts.  \n* A large **Temporal Transformer** processes the sequence of \\(S\\) time\u2011step contexts, producing a temporal context vector \\(z_s=\\text{Tr}_{\\text{Temp}}(V_0,\\dots,V_{s-1})\\in\\mathbb{R}^d\\) for each step \\(s\\) [moshi_2410.00037v1, p.13].  \n* A smaller **Depth Transformer** then operates over the \\(K\\) sub\u2011sequences within each time step. For a given step \\(s\\) and sub\u2011sequence index \\(k\\) it maps the temporal context \\(z_s\\) together with the previously generated sub\u2011sequences \\((V_{s,1},\\dots,V_{s,k-1})\\) to logits \\(l_{s,k}=\\text{Tr}_{\\text{Depth}}(z_s,V",
+    "grade": "correct",
+    "target_paper": "moshi_2410.00037v1",
+    "tokens_in": 6314,
+    "tokens_out": 580
+  },
+  "Q09": {
+    "question": "In 'Dynamic Chunking for End-to-End Hierarchical Sequence Modeling', what is H-Net and how does it replace fixed BPE tokenization?",
+    "answer": "H\u2011Net is a hierarchical, U\u2011Net\u2011style architecture that learns to process sequences at multiple levels of abstraction in a single, end\u2011to\u2011end model. It consists of three primary components \u2013 an encoder network (E), a main network (M), and a decoder network (D) \u2013 each implemented with a stack of sequence\u2011mixing layers such as Transformers or state\u2011space models [dynamic_chunking_2507.07955v2, p.4, 2.1.1 Components of H-Net]. The key innovation is a dynamic chunking mechanism that learns content\u2011 and context\u2011dependent segmentation strategies jointly with the rest of the model, rather than relying on a fixed, handcrafted tokenization step. By replacing the traditional tokenization\u2013LM\u2013detokenization pipeline with this single, learned hierarchical network, H\u2011Net can operate directly on raw bytes (or other low\u2011level units) while still maintaining autoregressive properties throughout its hierarchy [dynamic_chunking_2507.07955v2, p.1, Abstract / front matter]. When compute\u2011 and data\u2011matched, a one\u2011stage H\u2011Net operating at the byte",
+    "grade": "wrong",
+    "target_paper": "dynamic_chunking_2507.07955v2",
+    "tokens_in": 3229,
+    "tokens_out": 540
+  },
+  "Q10": {
+    "question": "What are the main components of the Dynamic Chunking mechanism (such as the routing module and smoothing module) in H-Net, and how does the smoothing module help training?",
+    "answer": "The Dynamic Chunking (DC) mechanism in H\u2011Net is composed of four key sub\u2011modules:\n\n1. **Routing Module** \u2013 computes boundary probabilities by measuring cosine similarity between adjacent encoder outputs, thereby identifying semantic shifts that should become chunk boundaries.  \n2. **Downsampler** \u2013 selects only the vectors marked as boundaries (where the indicator \\(b_t=1\\)) to form a compressed sequence, discarding the rest.  \n3. **Smoothing Module** \u2013 converts the discrete chunk boundaries into a differentiable form so that gradients can flow through the dechunking process.  \n4. **Upsampler** \u2013 restores the compressed vectors back to the original resolution using the boundary indicators.\n\nThe smoothing module is crucial for training stability. Because chunk boundaries are discrete, back\u2011propagation would otherwise be blocked. By smoothing the discrete decisions, the module allows gradients to propagate through the dechunking layer, preventing instability that would otherwise prevent the model from learning consistent chunking boundaries and leading to performance degradation [dynamic_chunking_2507.07955v2, p.3].",
+    "grade": "correct",
+    "target_paper": "dynamic_chunking_2507.07955v2",
+    "tokens_in": 2200,
+    "tokens_out": 234
+  },
+  "Q11": {
+    "question": "In the Dynamic Chunking paper, what loss function is added to control the target compression ratio of chunks?",
+    "answer": "The Dynamic Chunking paper introduces a **ratio loss** to guide the model toward a desired compression ratio. This loss is defined as  \n\n\\[\nL_{\\text{ratio}} = \\frac{F}{G}\\,,\n\\]\n\nwhere \\(F\\) represents the fraction of vectors actually selected, \\(G\\) denotes the average boundary probability, and \\(N\\) controls the target compression ratio. The loss reaches its minimum value of 1 when \\(F = G = \\frac{1}{N}\\) and can theoretically fall below 1 when \\(F \\neq G\\) (e.g., \\(F = \\frac{1}{N} + \\epsilon\\) and \\(G = \\frac{1}{N} - \\epsilon\\)) [dynamic_chunking_2507.07955v2, p.8].",
+    "grade": "correct",
+    "target_paper": "dynamic_chunking_2507.07955v2",
+    "tokens_in": 3884,
+    "tokens_out": 227
+  },
+  "Q12": {
+    "question": "What is the theoretical latency and practical overall latency (in ms) of the Moshi spoken dialogue system?",
+    "answer": "The Moshi spoken dialogue system is designed for real\u2011time interaction with a theoretical latency of **160\u202fms** and an overall practical latency of **200\u202fms** [moshi_2410.00037v1, p.1].",
+    "grade": "correct",
+    "target_paper": "moshi_2410.00037v1",
+    "tokens_in": 4328,
+    "tokens_out": 129
+  },
+  "Q13": {
+    "question": "How is cosine similarity between adjacent representations used to calculate boundary probabilities p_t in Dynamic Chunking?",
+    "answer": "The routing module in Dynamic Chunking computes boundary probabilities \\(p_t\\) by first measuring the cosine similarity between adjacent encoder outputs. For each position \\(t\\), it projects the current and previous representations into query and key vectors \\(\\mathbf{q}_t\\) and \\(\\mathbf{k}_{t-1}\\). The cosine similarity between these vectors is then scaled into a boundary score or probability: a low similarity (indicating a semantic shift) yields a high boundary probability \\(p_t\\), while a high similarity yields a low \\(p_t\\). This is formalized in equation (2) of the paper, where \\(p_t\\) is derived from the cosine similarity of \\(\\mathbf{q}_t\\) and \\(\\mathbf{k}_{t-1}\\) [dynamic_chunking_2507.07955v2, p.6].",
+    "grade": "correct",
+    "target_paper": "dynamic_chunking_2507.07955v2",
+    "tokens_in": 3543,
+    "tokens_out": 231
+  },
+  "Q14": {
+    "question": "What exact Word Error Rate (WER) did Moshi achieve on the Marathi and Hindi subsets of CommonVoice?",
+    "answer": "NOT_IN_PAPERS: The provided source passages do not contain any information about Moshi\u2019s Word Error Rate on the Marathi and Hindi subsets of CommonVoice.",
+    "grade": "refused_correctly",
+    "target_paper": "none",
+    "tokens_in": 3615,
+    "tokens_out": 64
+  },
+  "Q15": {
+    "question": "In 'Attention Is All You Need', how does Rotary Position Embedding (RoPE) compare against FlashAttention-2 on A100 GPUs?",
+    "answer": "NOT_IN_PAPERS: The provided source passages do not contain any information about Rotary Position Embedding (RoPE) or FlashAttention-2.",
+    "grade": "refused_correctly",
+    "target_paper": "none",
+    "tokens_in": 3396,
+    "tokens_out": 61
+  },
+  "Q16": {
+    "question": "What was the exact AWS cloud bill in USD for pre-training the 2-stage H-Net model in the Dynamic Chunking paper?",
+    "answer": "NOT_IN_PAPERS: The provided source passages do not contain any information about the exact AWS cloud bill in USD for pre-training the 2\u2011stage H\u2011Net model.",
+    "grade": "refused_correctly",
+    "target_paper": "none",
+    "tokens_in": 4199,
+    "tokens_out": 64
+  },
+  "Q17": {
+    "question": "How many parameters does the Whisper-large-v3 encoder use when fine-tuned inside the Attention Is All You Need architecture?",
+    "answer": "NOT_IN_PAPERS: The provided sources do not contain any information about Whisper-large-v3 or its parameter count when fine\u2011tuned within the Attention Is All You Need architecture.",
+    "grade": "refused_correctly",
+    "target_paper": "none",
+    "tokens_in": 3537,
+    "tokens_out": 94
+  },
+  "Q18": {
+    "question": "What learning rate schedule did the authors use to train the 70B parameter version of Helium in the Moshi paper?",
+    "answer": "NOT_IN_PAPERS: The provided passages do not contain information about a 70B\u2011parameter version of Helium or its learning rate schedule.",
+    "grade": "refused_correctly",
+    "target_paper": "none",
+    "tokens_in": 3891,
+    "tokens_out": 59
+  }
+}

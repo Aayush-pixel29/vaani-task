@@ -1,0 +1,16 @@
+# Secrets and virtualenv
+.env
+venv/
+__pycache__/
+*.pyc
+*.log
+
+# Heavy or generated datasets
+data/pdfs/
+data/parsed/
+
+# Scratch & working copies (results.csv is the official deliverable)
+results_clean.csv
+results_copy.csv
+results_master.csv
+test_out.txt
