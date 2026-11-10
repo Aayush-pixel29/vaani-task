@@ -219,8 +219,8 @@ def generate_pdf():
         "(4) <b>Hybrid Critic &amp; Verification Loop</b> combining a 0-token regex page-citation gate with a targeted LLM grounding check and a 1-turn repair loop. "
         "<b>The One Decision That Shaped It Most:</b> Choosing <i>Dual-Stage Buffered Verification</i> over raw unverified streaming. Because the company never "
         "wants to send a wrong or embarrassing answer just to stay fast, tokens streamed from Groq are held in an internal buffer until Step 4 verifies that all "
-        "citations exist in the retrieved pages and numbers are grounded. This deliberately increases user-visible median TTFT from ~420–814 ms (raw draft TTFT) "
-        "to ~980–1,376 ms (verified release TTFT), trading ~560–950 ms of initial wait for 100% refusal accuracy on unanswerable queries.", body_st
+        "citations exist in the retrieved pages and numbers are grounded. This deliberately increases user-visible median TTFT from approx. 420–814 ms (raw draft TTFT) "
+        "to approx. 980–1,376 ms (verified release TTFT), trading approx. 560–950 ms of initial wait for 100% refusal accuracy on unanswerable queries.", body_st
     ))
 
     # 2 The real service and my stand-in
@@ -255,8 +255,9 @@ def generate_pdf():
     # 3 Results
     story.append(Paragraph("3 Results", h_st))
     story.append(Paragraph(
-        "<b>Real vs. Stand-In Runs:</b> All 17 calibration rows (<font name='Courier'>real_calibration</font>) and all 54 retrieval evaluation rows in Table 3 "
-        "(<font name='Courier'>retrieval_eval</font>, 18 custom questions x 3 settings) ran on the <b>real Groq service</b> (<font name='Courier'>source=real</font>). "
+        "<b>Real vs. Stand-In Runs:</b> All 17 calibration rows (<font name='Courier'>real_calibration</font>) and 49 of 54 retrieval evaluation rows in Table 3 "
+        "(<font name='Courier'>retrieval_eval</font>) ran on the <b>real Groq service</b> (<font name='Courier'>source=real</font>, totaling 66 real calls; "
+        "the final 5 unanswerable queries of <font name='Courier'>512w_top5_rerank3</font> ran on <font name='Courier'>stand-in</font>). "
         "The 5 load scenarios in Tables 2a/2b (112 requests total) ran against the calibrated <b>stand-in</b> (<font name='Courier'>source=stand-in</font>). "
         "One <font name='Courier'>results.csv</font> row equals one end-to-end question; <font name='Courier'>Peak queue length</font> is derived from interval overlap "
         "of <font name='Courier'>start_time</font> and <font name='Courier'>total_ms</font>. For Table 2a, latency percentiles are computed over completed answers "
@@ -264,7 +265,7 @@ def generate_pdf():
         "5.3 / 10.5 / 15.5 ms. In Table 2b, <font name='Courier'>Tokens per answer</font> and <font name='Courier'>Cost per 1,000 answers</font> ($0.10/1M tokens) "
         "are computed across all offered requests in each scenario (accounting for tokens consumed prior to 429 termination). "
         "<b>Two Numbers We Could Not Have Guessed Without Running It:</b> (1) <font name='Courier'>openai/gpt-oss-20b</font> streams 4–25 hidden "
-        "reasoning tokens <i>before</i> the first visible answer token, inflating true user TTFT ~2.3x over raw first-chunk arrival while quietly burning the 8,000 TPM "
+        "reasoning tokens <i>before</i> the first visible answer token, inflating true user TTFT approx. 2.3x over raw first-chunk arrival while quietly burning the 8,000 TPM "
         "budget; (2) when Step 4 triggers a single Critic repair loop on <font name='Courier'>512w_top5_norerank</font> (e.g., <font name='Courier'>eval_512w_q05</font>), "
         "resending the multi-turn history balloons prompt consumption to <b>7,169 input tokens</b> (89.6% of the entire 8,000 TPM limit in one question!).", body_st
     ))
@@ -292,7 +293,7 @@ def generate_pdf():
     story.append(Paragraph(
         "<b>At the Per-Minute Limit (8,000 TPM):</b> Our pipeline tracks <font name='Courier'>x-ratelimit-remaining-tokens</font> from response headers. "
         "(1) <i>Who gets a weaker answer:</i> When remaining TPM drops below 3,800, adaptive retrieval automatically downgrades incoming queries from "
-        "<font name='Courier'>512w_top5_norerank</font> (~4,800 tokens/ans) to <font name='Courier'>256w_top3_norerank</font> (~2,323 tokens/ans) and uses the "
+        "<font name='Courier'>512w_top5_norerank</font> (approx. 4,800 tokens/ans) to <font name='Courier'>256w_top3_norerank</font> (approx. 2,323 tokens/ans) and uses the "
         "0-token deterministic citation gate instead of the LLM Critic. This keeps requests succeeding under tight token budgets (<font name='Courier'>steady</font> "
         "and <font name='Courier'>per_minute_limit_halved</font>), at the cost of lower factual recall (61.5% vs. 76.9%). (2) <i>Who is delayed vs. dropped:</i> "
         "If a call still hits HTTP 429, in-flight requests enter full-jitter backoff (up to 2 retries, delaying tail completions to 39.2–44.3s in "
@@ -361,11 +362,11 @@ def generate_pdf():
         "<b>Least Certain Assumption &amp; What Breaks:</b> Assuming Groq's 8,000 TPM bucket refills smoothly every millisecond rather than in discrete sub-second "
         "windows, and assuming our stand-in's linear contention (+180ms/request) matches LPU hardware batch scheduling. If Groq enforces micro-burst windowing or "
         "dynamic priority eviction, our 3,800-token degradation threshold could trigger too late under concurrent 512w repair loops. "
-        "<b>Two Things Deliberately Left Out:</b> (1) <i>Dense Vector / Hybrid Embeddings:</i> Omitted to keep local retrieval latency at ~3 ms with zero external GPU/API "
+        "<b>Two Things Deliberately Left Out:</b> (1) <i>Dense Vector / Hybrid Embeddings:</i> Omitted to keep local retrieval latency at approx. 3 ms with zero external GPU/API "
         "dependencies across a 120-page corpus; (2) <i>Speculative Sentence-Level Streaming:</i> Omitted because streaming sentence 1 before sentence 2 passes the "
         "Critic risks mid-stream retraction if a later claim fails verification. "
         "<b>One Thing New to Me (In My Own Words):</b> How reasoning models distort streaming telemetry and token budgets. On <font name='Courier'>gpt-oss-20b</font>, "
-        "the stream opens quickly (~380 ms), but the first several chunks are empty role deltas and internal reasoning tokens (<font name='Courier'>delta.reasoning</font>) "
+        "the stream opens quickly (approx. 380 ms), but the first several chunks are empty role deltas and internal reasoning tokens (<font name='Courier'>delta.reasoning</font>) "
         "before any <font name='Courier'>delta.content</font> appears. Measuring socket-first-chunk instead of content-first-token understates user wait by more than half, "
         "and those unseen reasoning tokens silently drain the per-minute token bucket.", body_st
     ))
@@ -391,8 +392,8 @@ def generate_pdf():
         "<b>One Thing It Got Wrong That I Caught (and How):</b> The assistant proposed a regex section parser (<font name='Courier'>SEC_INLINE</font>) and a numeric "
         "grader using word-boundary patterns like <font name='Courier'>\\b8\\b</font> and <font name='Courier'>\\b6\\b</font>, plus initially suggested "
         "<font name='Courier'>llama-3.1-8b-instant</font>. I caught the model deprecation via live API probing (404 -> <font name='Courier'>openai/gpt-oss-20b</font>). "
-        "I caught the parser bug by writing <font name='Courier'>test_user_parser.py</font> and inspecting its output across all 3 papers: it generated ~27 fake headings "
-        "in Moshi and ~25 in Dynamic Chunking from numeric table cells (<font name='Courier'>54.3 MPT</font>, <font name='Courier'>0.2474 Watermarked</font>) and missed "
+        "I caught the parser bug by writing <font name='Courier'>test_user_parser.py</font> and inspecting its output across all 3 papers: it generated approx. 27 fake headings "
+        "in Moshi and approx. 25 in Dynamic Chunking from numeric table cells (<font name='Courier'>54.3 MPT</font>, <font name='Courier'>0.2474 Watermarked</font>) and missed "
         "headings with parentheses (<font name='Courier'>2.2 Dynamic Chunking (DC)</font>). And I caught through unit tests that <font name='Courier'>\\b8\\b</font> "
         "falsely graded wrong answers as correct whenever they cited page 8 (<font name='Courier'>[p.8]</font>)! "
         "<b>One Decision Where I Overruled It:</b> The assistant proposed a heuristic bigram + section-title reranker (<font name='Courier'>512w_top5_rerank3</font>) "
