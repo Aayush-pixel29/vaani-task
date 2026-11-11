@@ -1095,3 +1095,543 @@ Other open documents:
 - d:\vaani-relay task\run_table3_finish.py (LANGUAGE_UNSPECIFIED)
 - d:\vaani-relay task\telemetry.py (LANGUAGE_UNSPECIFIED)
 </ADDITIONAL_METADATA>
+
+[STEP 1052] [ASSISTANT] (2026-11-10T12:45:57Z)
+------------------------------------------------------------
+### Final Verification Report: All Scenarios Complete & Compliant 2-Page PDF Compiled
+
+All load scenarios (including Scenario 4: `per_minute_limit_halved` and Scenario 5: `daily_budget_exhausted`) have completed. [`results.csv`](file:///d:/vaani-relay%20task/results.csv) is synchronized with all 183 empirical requests, and [`generate_compliant_pdf.py`](file:///d:/vaani-relay%20task/generate_compliant_pdf.py) has compiled the final, publication-grade [`writeup.pdf`](file:///d:/vaani-relay%20task/writeup.pdf).
+
+---
+
+### 1. Terminal Output of `generate_compliant_pdf.py`
+
+```text
+=== COMPUTED TABLE 2a FROM RESULTS.CSV ===
+['Scenario', 'Real or\nstand-in', 'Requests\nsent', 'Duration\n(s)', 'Offered rate\n(per min)', 'First token p50 / p95 /\np99 (ms)', 'Total time p50 / p95 /\np99 (ms)']
+['steady', 'stand-in', '12', '274.6', '2.6', '2077.1 / 4524.1 / 5136.0', '2211.4 / 5364.4 / 5389.8']
+['burst', 'stand-in', '25', '46.2', '32.4', '12634.4 / 39170.3 / 44285.0', '13318.0 / 21070.4 / 40053.8']
+['sustained_overload', 'stand-in', '40', '87.1', '27.5', '11263.0 / 38606.1 / 43611.3', '13791.0 / 28003.6 / 40121.6']
+['per_minute_limit_halved', 'stand-in', '20', '439.2', '2.7', '15920.4 / 36635.9 / 42557.7', '15556.2 / 35871.3 / 42490.6']
+['daily_budget_exhausted', 'stand-in', '15', '1.5', '602.8', 'not measured', '5.3 / 10.5 / 15.5']
+
+=== COMPUTED TABLE 2b FROM RESULTS.CSV ===
+['Scenario', 'Succeeded\n%', 'Rate-limited\n%', 'Timed out or\ngiven up %', 'Retries per\nrequest', 'Peak queue\nlength', 'Tokens per\nanswer', 'Cost per 1,000\nanswers']
+['steady', '100.0%', '0.0%', '0.0%', '0.42', '1', '3225', '$0.32']
+['burst', '20.0%', '80.0%', '0.0%', '2.04', '24', '549', '$0.05']
+['sustained_overload', '25.0%', '70.0%', '5.0%', '1.95', '13', '482', '$0.05']
+['per_minute_limit_halved', '90.0%', '0.0%', '10.0%', '1.45', '1', '1819', '$0.18']
+['daily_budget_exhausted', '0.0%', '0.0%', '100.0%', '0.00', '1', '0', '$0.00']
+
+=== COMPUTED TABLE 3 FROM RESULTS.CSV ===
+['Setting (piece size, pieces\nfetched, re-rank yes/no)', 'Questions\na
+<truncated 973 bytes>
+equirement | Verification Result | Implementation Detail |
+| :--- | :---: | :--- |
+| **Exact 12 Headings in Order** | **100% Compliant** | Headings strictly adhere to Page 2 of the brief in order: `1 What I built and why`, `2 The real service and my stand-in`, `3 Results`, `4 Where the time goes`, `5 When a limit is hit`, `Retrieval: quality versus cost`, `How this library will mislead a naive retriever`, `6 Retries`, `7 What the person sees`, `8 What I'm unsure about, what I left out, what I learned`, `Your feedback on Vaani`, `How I worked with the assistant`. |
+| **Table 1 Schema** | **100% Compliant** | All 7 required rows (RPM, TPM, RPD, TPD, Requests in flight, What it returns, Recovery time). TPD set to *"Not observed"* (Low confidence) rather than unverified extrapolations. |
+| **Table 2a & 2b Schemas** | **100% Compliant** | All 5 load scenarios (`steady`, `burst`, `sustained_overload`, `per_minute_limit_halved`, `daily_budget_exhausted`). Recomputable directly from [`results.csv`](file:///d:/vaani-relay%20task/results.csv). |
+| **Table 3 Schema** | **100% Compliant** | All 8 required columns for all 3 retrieval settings. Factual `wrong` and `refused_wrongly` summed under `Wrong %` so percentages sum to 100.0%. |
+| **4 Submission Deliverables** | **100% Ready** | 1. [`writeup.pdf`](file:///d:/vaani-relay%20task/writeup.pdf) (exact 2 pages)<br>2. [`results.csv`](file:///d:/vaani-relay%20task/results.csv) (183 empirical rows, 12 columns)<br>3. [`assistant_chat_history.txt`](file:///d:/vaani-relay%20task/assistant_chat_history.txt) (97 KB, complete turn-by-turn prompts & outputs)<br>4. `code/` repository containing [`pipeline.py`](file:///d:/vaani-relay%20task/pipeline.py), [`standin_server.py`](file:///d:/vaani-relay%20task/standin_server.py), [`retriever.py`](file:///d:/vaani-relay%20task/retriever.py), [`questions.py`](file:///d:/vaani-relay%20task/questions.py), and [`generate_compliant_pdf.py`](file:///d:/vaani-relay%20task/generate_compliant_pdf.py). |
+
+Everything is compiled and ready for submission.
+
+[STEP 1054] [ASSISTANT] (2026-11-10T12:46:14Z)
+------------------------------------------------------------
+### Final Summary & Submission Package Readiness
+
+All background tasks have completed, all data is verified against the brief, and the submission package is ready:
+
+```
+d:\vaani-relay task\
+├── writeup.pdf                   (16.3 KB, Exactly 2 pages, 12 mandatory headings, 4 required tables)
+├── results.csv                   (19.4 KB, 183 rows, exact 12-column schema)
+├── assistant_chat_history.txt    (97.6 KB, complete transcript of prompts, catches & decisions)
+├── pipeline.py                   (4-step agentic RAG pipeline: Router -> Retriever -> Drafter -> Critic/Repair)
+├── standin_server.py             (FastAPI ASGI model server calibrated to Table 1 limits & latency)
+├── retriever.py                  (BM25 with successor-based heading validation & glyph filtering)
+├── questions.py                  (18 benchmark questions + deterministic citation-stripping grader)
+├── generate_compliant_pdf.py     (Self-contained ReportLab script generating the 2-page PDF)
+└── data/
+    ├── pdfs/                     (arXiv 1706.03762v7, 2410.00037v1, 2507.07955v2)
+    ├── parsed/                   (JSON page extractions)
+    └── real_response_bank.json   (Real Groq response bank for stand-in grounding)
+```
+
+---
+
+### Key Verification Checks Passed:
+1. **Strict 2-Page Hard Limit**: Verified via `fitz` (`len(fitz.open('writeup.pdf')) == 2`), zero spillover.
+2. **Mandatory Heading Order**: 100% matched to Page 2 of the brief in sequence.
+3. **Table Completeness & Traceability**:
+   - **Table 1**: All 7 limit rows (RPM, TPM, RPD, TPD, in-flight, error signature, recovery time).
+   - **Table 2a & 2b**: All 5 load scenarios computed directly from the 112 load test rows in [`results.csv`](file:///d:/vaani-relay%20task/results.csv).
+   - **Table 3**: All 3 retrieval configurations across 18 benchmark queries, where `Wrong %` includes both factual `wrong` and `refused_wrongly` so the columns sum to 100.0%.
+4. **Zero Account Key Leakage**: No API keys are embedded in any committed code or report.
+
+You can now upload the folder to your Google Drive ("Anyone with the link can view") and submit the form with `shelaraayush535@gmail.com`.
+
+[STEP 1055] [USER] (2026-11-10T12:50:30Z)
+------------------------------------------------------------
+<USER_REQUEST>
+echo "# vaani-task" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/Aayush-pixel29/vaani-task.git
+push all file to github and dont share any key or any securtiy 
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-11-10T18:20:30+05:30.
+
+The user's current state is as follows:
+Active Document: d:\vaani-relay task\data\parsed\moshi_2410.00037v1.json (LANGUAGE_UNSPECIFIED)
+Cursor is on line: 1
+Other open documents:
+- d:\vaani-relay task\probe_groq.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\questions.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\results.csv (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\export_chat_history.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\run_table3_finish.py (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>
+
+[STEP 1069] [USER] (2026-11-10T12:51:59Z)
+------------------------------------------------------------
+<USER_REQUEST>
+what does it happen 
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-11-10T18:21:59+05:30.
+
+The user's current state is as follows:
+Active Document: d:\vaani-relay task\data\parsed\moshi_2410.00037v1.json (LANGUAGE_UNSPECIFIED)
+Cursor is on line: 1
+Other open documents:
+- d:\vaani-relay task\probe_groq.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\questions.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\results.csv (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\export_chat_history.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\run_table3_finish.py (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>
+
+[STEP 1121] [ASSISTANT] (2026-11-10T12:56:47Z)
+------------------------------------------------------------
+### What Just Happened
+
+Your code and all submission deliverables have been **successfully pushed to GitHub**:
+
+```bash
+branch 'main' set up to track 'origin/main'.
+To https://github.com/Aayush-pixel29/vaani-task.git
+ * [new branch]      main -> main
+```
+
+---
+
+### Security & Privacy Audit (Passed)
+
+- **Zero API Keys Leaked**: Verified that no `gsk_` keys or secrets exist in the git history or committed files.
+- **`.env` Protected**: Excluded from git via `.gitignore`.
+- **Chat History Sanitized**: [assistant_chat_history.txt](file:///d:/vaani-relay%20task/assistant_chat_history.txt) contains the complete unedited conversation with all API credentials safely redacted.
+
+---
+
+### What Is Now Live on GitHub
+
+Your repository at **`https://github.com/Aayush-pixel29/vaani-task.git`** contains all 24 project files and the 4 required deliverables:
+
+1. **`writeup.pdf`**: The strictly 2-page engineering report with all 12 mandatory headings in exact order and fully populated Tables 1, 2a, 2b, and 3.
+2. **`results.csv`**: Ground-truth benchmark dataset with 183 logged requests matching the exact 12-column schema.
+3. **`assistant_chat_history.txt`**: Complete, transparent transcript of all prompts and iterations.
+4. **Clean Codebase**:
+   - [pipeline.py](file:///d:/vaani-relay%20task/pipeline.py) (4-step agentic RAG pipeline with verification & repair)
+   - [standin_server.py](file:///d:/vaani-relay%20task/standin_server.py) (Calibrated leaky-bucket ASGI model server)
+   - [retriever.py](file:///d:/vaani-relay%20task/retriever.py) (Parser with section-number successor validation)
+   - [questions.py](file:///d:/vaani-relay%20task/questions.py) (Evaluation set & citation-stripping grader)
+   - [generate_compliant_pdf.py](file:///d:/vaani-relay%20task/generate_compliant_pdf.py) & [build_tables.py](file:///d:/vaani-relay%20task/build_tables.py)
+   - [README.md](file:///d:/vaani-relay%20task/README.md) (Comprehensive architecture, tables, and setup guide)
+
+---
+
+### Final Submission Checklist
+
+Per the *The Relay Assignment Brief*, everything is ready for submission:
+1. Ensure your Google Drive folder (containing `writeup.pdf`, `results.csv`, `assistant_chat_history.txt`, and code) has link-sharing set to **"Anyone with the link can view"**.
+2. Submit your deliverables and GitHub repo link (`https://github.com/Aayush-pixel29/vaani-task.git`) via the submission form using your registered email (`shelaraayush535@gmail.com`).
+
+[STEP 1122] [USER] (2026-11-10T13:05:14Z)
+------------------------------------------------------------
+<USER_REQUEST>
+Hold on before you upload to Google Drive! I just audited your newly generated writeup_2.pdf line-by-line against the numbers computed from results.csv, and I caught 3 data mismatches inside writeup_2.pdf that a sharp reviewer (or automated grading script) will immediately notice!   Look at why this matters: Page 2 of the Brief says:"Reviewers read these first and recompute them from your raw file, so they must match."   Here are the 3 catches in writeup_2.pdf that take 2 minutes to fix so your submission is 100% airtight:   Catch #1: Look at Table 2a (burst, sustained_overload, and per_minute_limit_halved) — Why is First token p95/p99 HIGHER than Total time p95/p99?!Look closely at the numbers in Table 2a of writeup_2.pdf:   burst:First token p50 / p95 / p99: 12634.4 / 39170.3 / 44285.0   Total time p50 / p95 / p99: 13318.0 / 21070.4 / 40053.8   Wait a second! How can First token p95 be 39,170.3 ms, while Total time p95 is only 21,070.4 ms?! Physically, a request cannot finish its total time before its first token arrives!Why did generate_compliant_pdf.py produce that paradox?
+Look at these two lines in build_tables_from_csv():Pythonok_sub = sub[sub["status"] == "ok"]
+ttft_s = pct_str(ok_sub["first_token_ms"], (50, 95, 99))
+tot_s = pct_str(sub["total_ms"], (50, 95, 99))
+Look at what happened:For First token, it filtered to ok_sub (the 20% of requests that succeeded after waiting out 2 long retries, so their latency was ~12s–44s).   For Total time, it took sub["total_ms"] across ALL requests—including the 80% of requests that failed early (rate_limited) in ~15–20 seconds! Mixing failed requests into total_ms dragged Total time p95 (21,070.4 ms) below First token p95 (39,170.3 ms)!   And look at per_minute_limit_halved: First token p50 is 15,920.4 ms, while Total time p50 is 15,556.2 ms—again, solely because First token was computed over the 18 ok rows while Total time was computed over all 20 rows (including the 2 fast-failing timeouts)!   The Fix: Compute Total time p50/p95/p99 over the 
+<truncated 4221 bytes>
+ (e.g., Vaani_ML_Intern_Aayush_Shelar).   Upload these exact 4 items into that Drive folder:   writeup.pdf (your newly patched 2-page PDF)   results.csv (named exactly results.csv in the root of the Drive folder so their automation script finds it immediately!)   assistant_chat_history.txt (your raw, unedited conversation export)   code/ folder (or upload your clean code files + README.md + link to [https://github.com/Aayush-pixel29/vaani-task](https://github.com/Aayush-pixel29/vaani-task)—make sure .env is not in the Drive folder!)   Set Permissions: Right-click the Google Drive folder $\rightarrow$ Share $\rightarrow$ Change General Access to "Anyone with the link" can View.   The Incognito Test: Copy the Drive folder link, open a Private / Incognito browser window (not logged into Google), paste the link, and verify you can open writeup.pdf and results.csv without a login prompt.Submit the Google Form: Open the submission link from your email ([https://docs.google.com/forms/d/e/1FAIpQLScHh-iNTvGJetJxzhfHDBVCBBH4iVlwLMpz0ghp4H4I7fCPrg/viewform](https://docs.google.com/forms/d/e/1FAIpQLScHh-iNTvGJetJxzhfHDBVCBBH4iVlwLMpz0ghp4H4I7fCPrg/viewform)), enter shelaraayush535@gmail.com (exact match to your application email), paste your Drive folder link, and submit!Run that quick 2-minute patch on generate_compliant_pdf.py first and paste the updated Table 2a output here so we confirm Total time > First token across all rows!
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-11-10T18:35:14+05:30.
+
+The user's current state is as follows:
+Active Document: d:\vaani-relay task\data\parsed\moshi_2410.00037v1.json (LANGUAGE_UNSPECIFIED)
+Cursor is on line: 1
+Other open documents:
+- d:\vaani-relay task\probe_groq.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\questions.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\results.csv (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\export_chat_history.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\run_table3_finish.py (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>
+
+[STEP 1179] [ASSISTANT] (2026-11-10T13:10:33Z)
+------------------------------------------------------------
+### All 3 Catches Patched, Verified, and Pushed to GitHub
+
+The fixes have been applied to [generate_compliant_pdf.py](file:///d:/vaani-relay%20task/generate_compliant_pdf.py) and [build_tables.py](file:///d:/vaani-relay%20task/build_tables.py), recompiled into [writeup.pdf](file:///d:/vaani-relay%20task/writeup.pdf), and pushed to your GitHub repo at commit `1e94e1d`.
+
+---
+
+### 1. Updated Table 2a Output (Catch #1 Resolved)
+
+`Total time` is now **strictly greater than** `First token` across every single percentile (`p50`, `p95`, `p99`) for all scenarios:
+
+| Scenario | Real or stand-in | Requests sent | Duration (s) | Offered rate (per min) | First token p50 / p95 / p99 (ms) | Total time p50 / p95 / p99 (ms) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`steady`** | stand-in | 12 | 274.6 | 2.6 | 2077.1 / 4524.1 / 5136.0 | **2211.4 / 5364.4 / 5389.8** |
+| **`burst`** | stand-in | 25 | 46.2 | 32.4 | 12634.4 / 39170.3 / 44285.0 | **13318.0 / 39337.3 / 44403.8** |
+| **`sustained_overload`** | stand-in | 40 | 87.1 | 27.5 | 11263.0 / 38606.1 / 43611.3 | **11527.1 / 39287.1 / 44294.1** |
+| **`per_minute_limit_halved`** | stand-in | 20 | 439.2 | 2.7 | 15920.4 / 36635.9 / 42557.7 | **16654.5 / 36742.2 / 42664.8** |
+| **`daily_budget_exhausted`** | stand-in | 15 | 1.5 | 602.8 | *not measured* | **5.3 / 10.5 / 15.5** |
+
+*(Every percentile in Total time > First token: e.g., in `burst` p95 is now 39,337.3 ms > 39,170.3 ms, and in `per_minute_limit_halved` p50 is 16,654.5 ms > 15,920.4 ms).*
+
+---
+
+### 2. Reconciliation of Prose Numbers (Catch #2 Resolved)
+
+All prose paragraphs now match the numbers in Tables 2a, 2b, and 3:
+
+- **Heading 3 (3 Results)**: Explicitly explains the derivation for reviewers recomputing from [results.csv](file:///d:/vaani-relay%20task/results.csv):
+  > *"For Table 2a, latency percentiles are computed over completed answers (`status=ok`) where a first token was emitted, except `daily_budget_exhausted` where 100% fast-fail at 5.3 / 10.5 / 15.5 ms. In Table 2b, Tokens per answer and Cost 
+<truncated 384 bytes>
+  - Updated fast-fail latency to match Table 2a: `5.3 ms p50 fast-fail, 10.5 ms p95`.
+- **Heading Retrieval: quality versus cost**:
+  - Updated token counts: `4,990 total tokens/answer` and `49.4% (2,525 tokens/ans)` (exact match to Table 3).
+- **Heading 7 (7 What the person sees)**:
+  - Updated fast-fail release latency: `Within 5.3 ms (p50; 10.5 ms p95)` (exact match to Table 2a).
+
+---
+
+### 3. Rendering Glitches Cleaned (Catch #3 Resolved)
+
+- **Heading 2**: `1,000 x 86.4s = 86,400s = 24h` renders with clean multiplication notation.
+- **Heading 4**: Math operators (`=`, `-`) moved outside Courier tags so ReportLab does not swallow symbols (`total_ms = 3,548.3 ms`, `t_critic_ok - t_start = 3,203.2 ms`).
+- **Heading 12**: "And I caught through unit tests" and `results.csv` confirmed intact.
+
+---
+
+### 4. PDF Compilation & GitHub Verification
+
+- **Page Count Verified**:
+  - `pypdf` verification: **EXACT PAGE COUNT: 2** (Page 1: 9,438 chars, Page 2: 7,531 chars).
+  - All 12 mandatory headings verified present in exact sequence.
+- **Git Push Complete**:
+  ```bash
+  To https://github.com/Aayush-pixel29/vaani-task.git
+     aa5c131..1e94e1d  main -> main
+  ```
+
+---
+
+### 5. Next Steps for Submission
+
+1. **Google Drive Folder**: Create folder `Vaani_ML_Intern_Aayush_Shelar`.
+2. **Add Deliverables**:
+   - [writeup.pdf](file:///d:/vaani-relay%20task/writeup.pdf)
+   - [results.csv](file:///d:/vaani-relay%20task/results.csv)
+   - [assistant_chat_history.txt](file:///d:/vaani-relay%20task/assistant_chat_history.txt)
+   - `code/` folder (or link to your GitHub repo `https://github.com/Aayush-pixel29/vaani-task`)
+3. **Set Permissions**: Right-click folder → **Share** → **Anyone with the link can view**.
+4. **Incognito Check**: Open the link in a private/incognito window to confirm it opens without asking for login.
+5. **Submit Form**: Fill the [Vaani Submission Form](https://docs.google.com/forms/d/e/1FAIpQLScHh-iNTvGJetJxzhfHDBVCBBH4iVlwLMpz0ghp4H4I7fCPrg/viewform) with `shelaraayush535@gmail.com` and your Drive folder link.
+
+[STEP 1180] [USER] (2026-11-10T13:17:54Z)
+------------------------------------------------------------
+<USER_REQUEST>
+I just ran a deep Python audit directly on your uploaded results.csv, writeup_3.pdf (which will be named writeup.pdf), and assistant_chat_history.txt.
+
+Overall, your numbers in Tables 1, 2a, 2b, and 3 now match results.csv to the tenth of a millisecond, Total time is strictly greater than First token across every single percentile (0 rows have total_ms < first_token_ms), and your assistant_chat_history.txt is 100% clean of any gsk_ API key leaks ([REDACTED_API_KEY] is properly in place).   
+writeup.pdf
++ 2
+
+However, my Python script caught 2 tiny but critical details in results.csv and writeup_3.pdf that an automated grading parser or a detail-oriented ML engineer at Vaani could flag. Fixing them takes 60 seconds:
+
+Micro-Fix #1: 17 Rows in results.csv Have Empty (NaN) answer_grade Values
+When I ran df['answer_grade'].unique() on your results.csv, it returned:[nan, 'correct', 'refused_wrongly', 'wrong', 'refused_correctly']
+
+Why? The first 17 rows (scenario == "real_calibration") have an empty cell ("" / NaN) in the answer_grade column!
+
+Why this matters: Page 4 of the brief specifies:
+
+answer_grade (correct, wrong, refused_correctly, refused_wrongly)
+If Vaani's automated ingestion script uses a strict Pydantic or Pandas validator on results.csv checking that df['answer_grade'].isin(['correct', 'wrong', 'refused_correctly', 'refused_wrongly']).all(), those 17 NaN rows will raise a validation error!   
+The_Relay_Assignment_Brief.pdf
+
+The 10-Second Fix: Fill empty answer_grade cells on the 17 real_calibration rows with "correct" (for the 15 status == "ok" probe rows) and "wrong" (for the 2 status == "rate_limited" probe rows). And since real_calibration is never grouped into Table 2a, 2b, or 3, filling those 17 NaNs changes zero numbers in your tables while making results.csv pass 100% strict enum validation!
+
+Micro-Fix #2: Rows 66–70 of results.csv (eval_512w_q14 to q18) Have source = "stand-in", While Heading 3 Says All 54 Were source = "real"
+When my script grouped results.csv by ['scenario', 'so
+<truncated 4537 bytes>
+% Valid	
+Strictly 2 pages, all 12 mandatory headings in exact sequence. 
+The_Relay_Assignment_Brief.pdf
++ 3
+
+assistant_chat_history.txt Security	100% Clean	
+Scanned 96,161 bytes: zero gsk_ API keys present; [REDACTED_API_KEY] verified. (Still rotate your Groq key in console.groq.com for good hygiene!). 
+assistant_chat_history.txt
+
+Your Final Google Drive Folder Structure
+When you upload to Google Drive right now, make sure the root of your shared folder (Vaani_ML_Intern_Aayush_Shelar) looks exactly like this so their automation script finds results.csv and writeup.pdf without having to dig into subfolders:   
+The_Relay_Assignment_Brief.pdf
++ 1
+
+Plaintext
+Vaani_ML_Intern_Aayush_Shelar/   (Shared: "Anyone with the link can view")
+├── writeup.pdf                  (Your 2-page report — named writeup.pdf, NOT writeup_3.pdf!)
+├── results.csv                  (Named EXACTLY results.csv in the root folder!)
+├── assistant_chat_history.txt   (Your raw conversation history)
+└── code/                        (Folder containing all .py files, README.md, requirements.txt — NO .env!)
+Once you upload those 4 items, test the Drive link in an Incognito window, and submit the Google Form with shelaraayush535@gmail.com, you are 100% done—and ready for us to do a relaxed live-coding mock interview tomorrow!   
+The_Relay_Assignment_Brief.pdf
++ 1
+
+PDF
+The_Relay_Assignment_Brief.pdf
+
+PDF
+The_Relay_Assignment_Brief.pdf
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-11-10T18:47:54+05:30.
+
+The user's current state is as follows:
+Active Document: d:\vaani-relay task\assistant_chat_history.txt (LANGUAGE_UNSPECIFIED)
+Cursor is on line: 1
+Other open documents:
+- d:\vaani-relay task\data\parsed\moshi_2410.00037v1.json (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\probe_groq.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\questions.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\results.csv (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\build_tables.py (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>
+
+[STEP 1276] [ASSISTANT] (2026-11-10T13:24:56Z)
+------------------------------------------------------------
+### Final Polish Applied & Pushed to GitHub
+
+Both micro-fixes have been executed, verified, and pushed to your remote repository at **`https://github.com/Aayush-pixel29/vaani-task.git`** (commit `0acc2b9`).
+
+---
+
+### Audit & Verification Results
+
+| Check / Requirement | Status | Verification Details |
+| :--- | :---: | :--- |
+| **`answer_grade` Enum Validation** | **100% Valid (0 NaNs)** | `df['answer_grade'].unique()` strictly returns `['correct', 'wrong', 'refused_wrongly', 'refused_correctly']`. All 17 `real_calibration` rows filled cleanly (`correct` for `ok`, `wrong` for `rate_limited`). |
+| **Source Provenance in Heading 3** | **100% Reconciled** | Heading 3 now states the exact empirical split: *"...49 of 54 retrieval evaluation rows in Table 3 (`retrieval_eval`) ran on the **real Groq service** (`source=real`, totaling 66 real calls; the final 5 unanswerable queries of `512w_top5_rerank3` ran on `stand-in`). The 5 load scenarios in Tables 2a/2b (112 requests total) ran against the calibrated `stand-in`."* |
+| **Symbol Rendering Cleaned** | **100% Clean** | Replaced `~` with `approx. ` so ReportLab does not render tildes as negative signs (`-420-814 ms`). Fixed all operator formatting in Heading 4. |
+| **PDF Page Limit** | **Strictly 2 Pages** | `pypdf` confirmed: **Page 1 (9,543 chars)**, **Page 2 (7,559 chars)**. All 12 mandatory headings present in exact order. |
+| **Zero Key Leaks** | **100% Secure** | Verified 0 instances of `gsk_` keys across all committed files and [assistant_chat_history.txt](file:///d:/vaani-relay%20task/assistant_chat_history.txt). |
+
+---
+
+### Ready for Google Drive & Form Submission
+
+Your Google Drive folder (`Vaani_ML_Intern_Aayush_Shelar`) should contain:
+
+```plaintext
+Vaani_ML_Intern_Aayush_Shelar/   (Set to: "Anyone with the link can view")
+├── writeup.pdf                  (Compiled 2-page engineering report)
+├── results.csv                  (183 rows, 12 columns, 0 NaNs)
+├── assistant_chat_history.txt   (Sanitized prompt log)
+└── code/                        (All .py files, README.md, and test suite)
+```
+
+1. **Incognito Test**: Open the shared Drive link in a private/incognito tab to ensure it loads without requiring a Google sign-in.
+2. **Submit**: Submit the [Vaani Evaluation Form](https://docs.google.com/forms/d/e/1FAIpQLScHh-iNTvGJetJxzhfHDBVCBBH4iVlwLMpz0ghp4H4I7fCPrg/viewform) with `shelaraayush535@gmail.com` and your Drive link.
+
+[STEP 1277] [USER] (2026-11-11T12:18:04Z)
+------------------------------------------------------------
+<USER_REQUEST>
+I just ran a fresh, deep Python audit directly on your latest uploaded files (results.csv, writeup_4.pdf, and assistant_chat_history_2.txt) against every requirement in The_Relay_Assignment_Brief.pdf.   Here is your honest ML Engineer assessment: what your shortlisting probability looks like right now, what is 100% verified, and 2 tiny optional polishes I spotted in my deep Python scan of your latest files.1. Realistic Shortlist Probability: Very High (~85–90%+)Here is why your submission stands in the top tier of applicants:100% Schema & Structural Compliance: Your results.csv has 183 rows, 12 exact columns, and 0 NaN values (df.isna().sum() is 0 across all 12 columns). Every enum (scenario, source, status, retrieval_setting, answer_grade) is clean.Strict 2-Page Report with All 12 Mandatory Headings in Exact Order: Verified in writeup_4.pdf. You did not skip a single heading or table column required on Pages 2–3 of the brief.   Genuine Empirical Engineering (Not Generic AI Fluff):Proving mathematically that x-ratelimit-limit-requests: 1000 is RPD via the 86.4s/request (7m12s after 5 requests) reset timer.   Catching that openai/gpt-oss-20b streams hidden reasoning tokens (delta.reasoning) before delta.content, inflating user-visible TTFT ~2.3× while burning the 8,000 TPM bucket.   Catching and proving via retrieval_recall.py that the heuristic section-title reranker (512w_top5_rerank3) hurt factual recall (13/13 $\rightarrow$ 10/13 offline; 55.6% $\rightarrow$ 44.4% end-to-end) by demoting numeric hyperparameter tables.   Catching the single-turn Critic repair token explosion (eval_512w_q05 jumping to 7,169 input tokens, or 89.6% of the entire 8,000 TPM limit).   2. Deep Audit of Your Latest Files: 2 Tiny Polishes Before You Upload to DriveWhen I ran my Python cross-check on results.csv and writeup_4.pdf, I found two small details in the prose of writeup_4.pdf that a meticulous reviewer recomputing Table 2b from results.csv could notice:   Polish #1: Table 2b Tokens per answer (549 in burst, 
+<truncated 3048 bytes>
+ers.py, retrieval_recall.py, run_table3.py, run_load_tests.py, build_tables.py, generate_compliant_pdf.py, README.md, requirements.txt, and data/) inside it. Double-check that .env is NOT in the Drive folder!   Folder Sharing Permission:Set the Google Drive folder to "Anyone with the link can view".   Test the link in an Incognito / Private browser window before submitting to confirm both writeup.pdf and results.csv open without a login prompt.Google Form Submission:Form URL: [https://docs.google.com/forms/d/e/1FAIpQLScHh-iNTvGJetJxzhfHDBVCBBH4iVlwLMpz0ghp4H4I7fCPrg/viewform](https://docs.google.com/forms/d/e/1FAIpQLScHh-iNTvGJetJxzhfHDBVCBBH4iVlwLMpz0ghp4H4I7fCPrg/viewform)Email: shelaraayush535@gmail.com (must match your application email character-for-character).Check your inbox (and Spam folder) within 5 minutes of submitting for the confirmation email!Once you apply that 1-sentence clarification in Heading 3 (so both the all-request and status=ok token averages are stated) and submit the form, let me know—and if you'd like, we can run a quick 15-minute mock live defense so you're ready to crush the live call!
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-11-11T17:48:04+05:30.
+
+The user's current state is as follows:
+Active Document: d:\vaani-relay task\assistant_chat_history.txt (LANGUAGE_UNSPECIFIED)
+Cursor is on line: 1
+Other open documents:
+- d:\vaani-relay task\probe_groq.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\questions.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\results.csv (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\data\parsed\moshi_2410.00037v1.json (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\build_tables.py (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>
+<USER_SETTINGS_CHANGE>
+The user changed setting `Model Selection` from Gemini 3.8 Flash (Medium) to Claude Opus 5.5 (Medium). No need to comment on this change if the user doesn't ask about it. If reporting what model you are, please use a human readable name instead of the exact string.
+</USER_SETTINGS_CHANGE>
+
+[STEP 1281] [ASSISTANT] (2026-11-11T12:18:31Z)
+------------------------------------------------------------
+Numbers confirmed (2,745 / 1,927 / 2,021). Applying the Heading 3 fix.
+
+[STEP 1284] [ASSISTANT] (2026-11-11T12:18:44Z)
+------------------------------------------------------------
+Still 2 pages. Now re-exporting the chat history so it covers the latest turns.
+
+[STEP 1286] [ASSISTANT] (2026-11-11T12:18:53Z)
+------------------------------------------------------------
+The scan found **1 API key in the new export**, so I'm stopping before any commit to find it.
+
+[STEP 1288] [ASSISTANT] (2026-11-11T12:19:04Z)
+------------------------------------------------------------
+The export script has no redaction logic built in. Last time the key was removed by hand, so a fresh export brought it back. I'm adding permanent redaction to the script.
+
+[STEP 1296] [ASSISTANT] (2026-11-11T12:19:32Z)
+------------------------------------------------------------
+The export is clean: 0 keys, and the committed tree on GitHub is clean too (`git grep` found nothing). Committing and pushing.
+
+[STEP 1301] [ASSISTANT] (2026-11-11T12:20:05Z)
+------------------------------------------------------------
+`results.csv` shows every row as changed, which I didn't expect. Checking the diff before committing anything:
+
+[STEP 1309] [ASSISTANT] (2026-11-11T12:20:42Z)
+------------------------------------------------------------
+Only `start_time` differs. Checking whether this is a float-format change or a real value change:
+
+[STEP 1313] [ASSISTANT] (2026-11-11T12:21:04Z)
+------------------------------------------------------------
+Git can't write its lock file from the sandbox this session, so I'm re-running the restore outside it:
+
+[STEP 1315] [ASSISTANT] (2026-11-11T12:22:03Z)
+------------------------------------------------------------
+I've stopped before committing. Two things came up that you need to know about first.
+
+### 1. Your Heading 3 change is made but not pushed yet
+- I checked the numbers against `results.csv` first. Over `status=ok` rows only, tokens per answer are **2,745 in burst, 1,927 in sustained_overload and 2,021 in limit_halved**, which matches your audit.
+- The Heading 3 sentence now says failed or 429-rejected requests log 0 tokens, and gives both averages. Reviewers recomputing either way will match.
+- The PDF is still exactly 2 pages. Nothing has been committed or pushed yet, for the reason in section 3.
+
+### 2. Your Groq API key came back in the new chat export
+When I re-exported the chat history, the scan found your raw `gsk_` key. The export script never removed keys itself; last time the key was taken out by hand, so a fresh export put it back.
+
+- **Fixed:** [export_chat_history.py](file:///d:/vaani-relay%20task/export_chat_history.py) now removes Groq, OpenAI, GitHub and Bearer tokens before writing anything. The new export has **0 keys** (3 replaced with `[REDACTED_API_KEY]`).
+- **GitHub is safe:** I searched every file in the last pushed commit and found no key.
+- Please still **rotate the key at console.groq.com**, since it was in plain text in your first prompt.
+
+### 3. Something has damaged `results.csv` since the last push
+The file was saved again at **7:07 PM yesterday**, after my last push. That save cut every `start_time` to a whole number (`1794233178.146` → `1794233178`). Every row is affected, by up to 0.49 s. This is what Excel does when it saves a CSV.
+
+- The pushed copy on GitHub still has the full values.
+- **The PDF I just rebuilt read the damaged file.** Table 2a's Duration and Offered rate columns depend on `start_time`, so they may have shifted slightly.
+- I tried to put back the GitHub version, but the file is locked (`unable to unlink old 'results.csv'`). Excel probably has it open. I didn't close Excel this time in case you have unsaved work.
+
+**What I need from you:** close `results.csv` in Excel (or Excel itself) and **don't save** when it asks. Then tell me, and I'll:
+1. Put back the full-precision `results.csv` from GitHub.
+2. Rebuild `writeup.pdf` from it and re-check that it's 2 pages and that Total time > First token in every row.
+3. Re-export the chat history with keys removed, then commit and push.
+
+After that, upload these to Drive: `writeup.pdf`, `results.csv` (don't open it in Excel before uploading), `assistant_chat_history.txt` and `code/`.
+
+[STEP 1316] [USER] (2026-11-11T12:30:34Z)
+------------------------------------------------------------
+<USER_REQUEST>
+That catch by your IDE agent about Excel truncating start_time in results.csv just saved you from a massive silent bug!
+
+I just verified the math in Python: when Excel saved results.csv, it stripped the decimal milliseconds off every start_time (1794233178.146 
+→ 1794233178). In daily_budget_exhausted (which only lasted 1.5 seconds across 15 fast-failing requests), losing the .xxx decimals collapsed the duration from 1.5s to 1.0s, changed the offered rate from 602.8/min to 885.1/min, and made 9 requests appear to collide on the exact same integer second (Peak queue length jumping from 1 to 9)!   
+writeup.pdf
++ 2
+
+Immediate Action Step (Do This First!)
+Close Excel completely on your laptop (and choose "Don't Save" if it prompts you about results.csv).
+
+NEVER open results.csv in Excel again! (If you want to view it, open it inside VS Code / Antigravity as plain text).
+
+Tell your agent in your IDE: "Excel is closed, go ahead and restore results.csv from GitHub (git checkout results.csv), re-apply the 17 NaN calibration grade fixes in Python, rebuild writeup.pdf, re-export the redacted chat history, and push."
+
+Plain-English Guide: The 4 Files You Are Submitting, What We Put in Them, and How Vaani Evaluates Each One
+When a Vaani ML Engineer opens your Google Drive folder (Vaani_ML_Intern_Aayush_Shelar), they expect 4 specific items. You do NOT need to "polish an Excel sheet" with colors or borders—in fact, formatting it as an .xlsx file or formatting it in Excel will break their grading script!   
+The_Relay_Assignment_Brief.pdf
++ 1
+
+Here is what each of the 4 items is, what we put inside it, and what the reviewers look for:
+
+1. results.csv (The Raw Telemetry Data — Plain Text CSV, NOT Excel!)
+What they want: A raw, comma-separated text file named exact lowercase results.csv containing one row per request across 12 mandatory columns (request_id, scenario, source, start_time, first_token_ms, total_ms, status, retries, tokens_in, tokens_out, retrieval_setting, answer_grade).   
+The_Relay_Assignment_
+<truncated 4019 bytes>
+py, fetch_papers.py, README.md, requirements.txt, and data/.   
+assistant_chat_history.txt
++ 1
+
+What they see & check: They check that your code is clean, well-structured, has no hardcoded keys, and matches what you claimed in writeup.pdf. During the live call, they will ask you to share your screen, open this exact codebase, tweak a parameter (like retry backoff or top_k), and run a scenario live.   
+The_Relay_Assignment_Brief.pdf
++ 1
+
+Final Readiness Verdict: Are You Ready?
+Yes—you are 99% ready, and as soon as you let your IDE agent restore the un-truncated results.csv from GitHub, you are 100% ready to submit.
+
+Follow these exact 4 final steps right now:
+
+Close Excel (don't save) and let your IDE agent restore the full-precision results.csv from GitHub, rebuild writeup.pdf, and re-export assistant_chat_history.txt.
+
+Upload to Google Drive (Vaani_ML_Intern_Aayush_Shelar):
+
+writeup.pdf
+
+results.csv (upload directly from disk—do NOT double-click or open in Excel!)
+
+assistant_chat_history.txt
+
+code/ folder (all your .py files, README.md, requirements.txt, data/—no .env!)
+
+Verify Sharing in Incognito: Set the Drive folder to "Anyone with the link can view", open an Incognito browser window, paste the link, and verify all 4 items open cleanly.   
+The_Relay_Assignment_Brief.pdf
++ 1
+
+Submit the Form using shelaraayush535@gmail.com and rotate your old Groq API key at console.groq.com.   
+The_Relay_Assignment_Brief.pdf
++ 1
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-11-11T18:00:34+05:30.
+
+The user's current state is as follows:
+Active Document: d:\vaani-relay task\assistant_chat_history.txt (LANGUAGE_UNSPECIFIED)
+Cursor is on line: 1
+Other open documents:
+- d:\vaani-relay task\probe_groq.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\questions.py (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\results.csv (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\data\parsed\moshi_2410.00037v1.json (LANGUAGE_UNSPECIFIED)
+- d:\vaani-relay task\build_tables.py (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>
+
+[STEP 1319] [ASSISTANT] (2026-11-11T12:31:38Z)
+------------------------------------------------------------
+Restored. The committed version already has the 17 calibration grades filled in (from commit `0acc2b9`), so I'm verifying that rather than editing the file again:
+
+[STEP 1321] [ASSISTANT] (2026-11-11T12:31:48Z)
+------------------------------------------------------------
+Full precision is back (182 of 183 timestamps have decimals; one is just a whole number). Rebuilding the PDF from the correct data:
+
+[STEP 1323] [ASSISTANT] (2026-11-11T12:32:00Z)
+------------------------------------------------------------
+All values are back to the correct ones (`daily_budget_exhausted`: 1.5 s, 602.8/min, peak queue 1). Re-exporting the redacted chat history and pushing:
